@@ -142,39 +142,35 @@ class Exercise_Log(Tk):
             self.check_confirmation = self.entry.get()
             # checks if user input matches "yes"; if it does, following code will run
             if self.check_confirmation.lower() == "yes":
-                # booleans to help control conditional statements below
-                self.indoor_run_bool = True
-                self.outdoor_run_bool = False
-                self.confirmed_run = Label(self, text = "Sure, I can log an indoor run for you.")
-                self.confirmed_run.pack(side = TOP, padx = 100, pady = 20)
-                # sets exercise_type to "indoor run" to enable reusable string
-                self.exercise_type = "indoor run"
-                self.indoor_run_pathway = 1
-                self.indoor_run()
+                self.indoor_run_check = True
+                self.outdoor_run_check = False
+                self.handle_indoor_run_conversation()
             elif self.check_confirmation.lower() == "no":
-                self.indoor_run_bool = False
-                self.outdoor_run_bool = True
-                self.confirmed_run = Label(self, text = "Alright, lets log an outdoor run.")
-                self.confirmed_run.pack(side = TOP, padx = 100, pady = 20)
-                self.exercise_type = "outdoor run"
-                self.outdoor_run_pathway = 1
-                self.outdoor_run()
+                self.indoor_run_check = False
+                self.outdoor_run_check = True
+                self.handle_outdoor_run_conversation()
         elif self.pathway == 5:
             self.exercise_date_completed.pack_forget()
             self.get_date = self.entry.get()
-            if self.indoor_run_bool == True:
-                if self.indoor_run_pathway == 1: #CHANGE THESE SO THEY INCLUDE A BOOLEAN CHECK: INDOOR RUN = TRUE OR INDOOR RUN = FALSE
+            if self.indoor_run_check == True:
+                if self.indoor_run_pathway == 1:
                     self.indoor_run_pathway = 2
                     self.indoor_run()
-            elif self.outdoor_run_bool == True:
+            elif self.outdoor_run_check == True:
                 if self.outdoor_run_pathway == 1:
-                    self.outdoor_run_pathway == 2
+                    self.outdoor_run_pathway = 2
                     self.outdoor_run()
         elif self.pathway == 6:
             self.exercise_time_completed.pack_forget()
             self.get_time = self.entry.get()
-            self.indoor_run_pathway = 3
-            self.indoor_run()
+            if self.indoor_run_check == True:
+                if self.indoor_run_pathway == 2:
+                    self.indoor_run_pathway = 3
+                    self.indoor_run()
+            elif self.outdoor_run_check == True:
+                if self.outdoor_run_pathway == 2:
+                    self.outdoor_run_pathway = 3
+                    self.outdoor_run()
         elif self.pathway == 7:
             self.exercise_duration_completed.pack_forget()
             self.get_duration = self.entry.get()
@@ -207,11 +203,21 @@ class Exercise_Log(Tk):
                 self.indoor_cycle()
 
     
+    # ****** work on getting these functions to handle each exercise type log conversation
     def handle_indoor_run_conversation(self):
-        pass
+        self.confirmed_run = Label(self, text = "Sure, I can log an indoor run for you.")
+        self.confirmed_run.pack(side = TOP, padx = 100, pady = 20)
+        # sets exercise_type to "indoor run" to enable reusable string
+        self.exercise_type = "indoor run"
+        self.indoor_run_pathway = 1
+        self.indoor_run()
 
     def handle_outdoor_run_conversation(self):
-        pass
+        self.confirmed_run = Label(self, text = "Alright, lets log an outdoor run.")
+        self.confirmed_run.pack(side = TOP, padx = 100, pady = 20)
+        self.exercise_type = "outdoor run"
+        self.outdoor_run_pathway = 1
+        self.outdoor_run()
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~ Entry field for exercise type ~~~~~~~~~~~~~~~~~~~~~~~
@@ -310,6 +316,8 @@ class Exercise_Log(Tk):
             self.outdoor_run_date = self.exercise_date()
         elif self.outdoor_run_pathway == 2:
             self.outdoor_run_time = self.exercise_time()
+        elif self.outdoor_run_pathway == 3:
+            self.outdoor_run_duration = self.exercise_duration()
         """"
         self.outdoor_run_date_check = input(Fore.GREEN + f"\nOk, so you completed your {self.exercise_type} on {self.outdoor_run_date}. Is that correct? " + Fore.WHITE)
         if self.outdoor_run_date_check == "yes":
