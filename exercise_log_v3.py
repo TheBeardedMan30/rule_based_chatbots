@@ -172,6 +172,10 @@ class Exercise_Log(Tk):
                 if self.swimming_laps_pathway == 1:
                     self.swimming_laps_pathway = 2
                     self.swimming_laps()
+            elif self.ocean_swim_check == True:
+                if self.ocean_swim_pathway == 1:
+                    self.ocean_swim_pathway = 2
+                    self.ocean_swim()
         elif self.pathway == 6:
             self.exercise_time_completed.pack_forget()
             self.get_time = self.entry.get()
@@ -195,6 +199,10 @@ class Exercise_Log(Tk):
                 if self.swimming_laps_pathway == 2:
                     self.swimming_laps_pathway = 3
                     self.swimming_laps()
+            elif self.ocean_swim_check == True:
+                if self.ocean_swim_pathway == 2:
+                    self.ocean_swim_pathway = 3
+                    self.ocean_swim()
         elif self.pathway == 7:
             self.exercise_duration_completed.pack_forget()
             self.get_duration = self.entry.get()
@@ -218,6 +226,10 @@ class Exercise_Log(Tk):
                 if self.swimming_laps_pathway == 3:
                     self.swimming_laps_pathway = 4
                     self.swimming_laps()
+            elif self.ocean_swim_check == True:
+                if self.ocean_swim_pathway == 3:
+                    self.ocean_swim_pathway = 4
+                    self.ocean_swim()
         elif self.pathway == 8:
             self.exercise_distance_completed.pack_forget()
             self.get_distance = self.entry.get()
@@ -241,6 +253,10 @@ class Exercise_Log(Tk):
                 if self.swimming_laps_pathway == 4:
                     self.swimming_laps_pathway = 5
                     self.swimming_laps()
+            elif self.ocean_swim_check == True:
+                if self.ocean_swim_pathway == 4:
+                    self.ocean_swim_pathway = 5
+                    self.ocean_swim()
         elif self.pathway == 9:
             if self.indoor_run_check == True:
                 self.indoor_run_complete_entry.pack_forget()
@@ -277,6 +293,13 @@ class Exercise_Log(Tk):
                     self.update_exercise_log()
                     self.entry_added = Label(self, text = f"The entry has been added to your exercise log.\n\n{self.exercise_log[-1]}")
                     self.entry_added.pack(side = TOP, padx = 100, pady = 20)
+            elif self.ocean_swim_check == True:
+                self.ocean_swim_complete_entry.pack_forget()
+                self.confirm_log = self.entry.get()
+                if self.confirm_log.lower() == "yes":
+                    self.update_exercise_log()
+                    self.entry_added = Label(self, text = f"The entry has been added to your exercise log.\n\n{self.exercise_log[-1]}")
+                    self.entry_added.pack(side = TOP, padx = 100, pady = 20)
         elif self.pathway == 10:
             # removes previous text from GUI
             self.confirm_option.pack_forget()
@@ -305,6 +328,14 @@ class Exercise_Log(Tk):
                 self.indoor_run_check = False
                 self.outdoor_run_check = False
                 self.handle_swimming_laps_conversation()
+            elif self.check_confirmation.lower() == "no":
+                self.ocean_swim_check = True
+                self.swimming_laps_check = False
+                self.indoor_cycle_check = False
+                self.outdoor_cycle_check = False
+                self.indoor_run_check = False
+                self.outdoor_run_check = False
+                self.handle_ocean_swim_conversation()
 
     
     # ****** work on getting these functions to handle each exercise type log conversation
@@ -347,6 +378,13 @@ class Exercise_Log(Tk):
         self.swimming_laps_pathway = 1
         self.swimming_laps()
 
+    def handle_ocean_swim_conversation(self):
+        self.confirmed_swim= Label(self, text = "Sure, I can log a session of swimming laps for you.")
+        self.confirmed_swim.pack(side = TOP, padx = 100, pady = 20)
+        # sets exercise_type to "indoor run" to enable reusable string
+        self.exercise_type = "ocean swim"
+        self.ocean_swim_pathway = 1
+        self.ocean_swim()
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~ Entry field for exercise type ~~~~~~~~~~~~~~~~~~~~~~~
     def exercise_type_prompt(self):
@@ -489,6 +527,24 @@ class Exercise_Log(Tk):
             self.confirm_entry = self.user_input_field()
             self.pathway = 9
             self.display_submit_button()
+
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Logging ocean swim ~~~~~~~~~~~~~~~~~~~~~~~~~
+    def ocean_swim(self):
+        if self.ocean_swim_pathway == 1:
+            self.ocean_swim_date = self.exercise_date()
+        elif self.ocean_swim_pathway == 2:
+            self.ocean_swim_time = self.exercise_time()
+        elif self.ocean_swim_pathway == 3:
+            self.ocean_swim_duration = self.exercise_duration()
+        elif self.ocean_swim_pathway == 4:
+            self.ocean_swim_distance = self.exercise_distance()
+        elif self.ocean_swim_pathway == 5:
+            self.ocean_swim_complete_entry = Label(self, text = f"The following information will be added to your exercise log:\n\nDate of {self.exercise_type}: {self.get_date}\nTime of {self.exercise_type}: {self.get_time}\nDuration of {self.exercise_type}: {self.get_duration}\nDistance of {self.exercise_type}: {self.get_distance}\n\nWould you like to add this entry to your log?")
+            self.ocean_swim_complete_entry.pack(side = TOP, padx = 100, pady = 20)
+            self.confirm_entry = self.user_input_field()
+            self.pathway = 9
+            self.display_submit_button()
     
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Gain exercise date ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -503,6 +559,8 @@ class Exercise_Log(Tk):
         elif self.outdoor_cycle_check == True:
             self.confirmed_cycle.pack_forget()
         elif self.swimming_laps_check == True:
+            self.confirmed_swim.pack_forget()
+        elif self.ocean_swim_check == True:
             self.confirmed_swim.pack_forget()
         # prompt user for exercise date
         self.exercise_date_completed = Label(self, text = f"On what date did you complete your {self.exercise_type}? ")
@@ -551,6 +609,8 @@ class Exercise_Log(Tk):
             self.outdoor_cycle_log_entry = self.exercise_log.append(f"Exercise type: {self.exercise_type}\nDate: {self.get_date}\nTime: {self.get_time}\nDuration: {self.get_duration}\nDistance: {self.get_distance}")
         elif self.exercise_type == "swimming laps":
             self.swimming_laps_log_entry = self.exercise_log.append(f"Exercise type: {self.exercise_type}\nDate: {self.get_date}\nTime: {self.get_time}\nDuration: {self.get_duration}\nDistance: {self.get_distance}")
+        elif self.exercise_type == "ocean swim":
+            self.ocean_swim_log_entry = self.exercise_log.append(f"Exercise type: {self.exercise_type}\nDate: {self.get_date}\nTime: {self.get_time}\nDuration: {self.get_duration}\nDistance: {self.get_distance}")
             
     
 
