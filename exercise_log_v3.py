@@ -160,6 +160,14 @@ class Exercise_Log(Tk):
                 if self.outdoor_run_pathway == 1:
                     self.outdoor_run_pathway = 2
                     self.outdoor_run()
+            elif self.indoor_cycle_check == True:
+                if self.indoor_cycle_pathway == 1:
+                    self.indoor_cycle_pathway = 2
+                    self.indoor_cycle()
+            elif self.outdoor_cycle_check == True:
+                if self.outdoor_cycle_pathway == 1:
+                    self.outdoor_cycle_pathway = 2
+                    self.outdoor_cycle()
         elif self.pathway == 6:
             self.exercise_time_completed.pack_forget()
             self.get_time = self.entry.get()
@@ -171,23 +179,81 @@ class Exercise_Log(Tk):
                 if self.outdoor_run_pathway == 2:
                     self.outdoor_run_pathway = 3
                     self.outdoor_run()
+            elif self.indoor_cycle_check == True:
+                if self.indoor_cycle_pathway == 2:
+                    self.indoor_cycle_pathway = 3
+                    self.indoor_cycle()
+            elif self.outdoor_cycle_check == True:
+                if self.outdoor_cycle_pathway == 2:
+                    self.outdoor_cycle_pathway = 3
+                    self.outdoor_cycle()
         elif self.pathway == 7:
             self.exercise_duration_completed.pack_forget()
             self.get_duration = self.entry.get()
-            self.indoor_run_pathway = 4
-            self.indoor_run()
+            if self.indoor_run_check == True:
+                if self.indoor_run_pathway == 3:
+                    self.indoor_run_pathway = 4
+                    self.indoor_run()
+            elif self.outdoor_run_check == True:
+                if self.outdoor_run_pathway == 3:
+                    self.outdoor_run_pathway = 4
+                    self.outdoor_run()
+            elif self.indoor_cycle_check == True:
+                if self.indoor_cycle_pathway == 3:
+                    self.indoor_cycle_pathway = 4
+                    self.indoor_cycle()
+            elif self.outdoor_cycle_check == True:
+                if self.outdoor_cycle_pathway == 3:
+                    self.outdoor_cycle_pathway = 4
+                    self.outdoor_cycle()
         elif self.pathway == 8:
             self.exercise_distance_completed.pack_forget()
             self.get_distance = self.entry.get()
-            self.indoor_run_pathway = 5
-            self.indoor_run()
+            if self.indoor_run_check == True:
+                if self.indoor_run_pathway == 4:
+                    self.indoor_run_pathway = 5
+                    self.indoor_run()
+            elif self.outdoor_run_check == True:
+                if self.outdoor_run_pathway == 4:
+                    self.outdoor_run_pathway = 5
+                    self.outdoor_run()
+            elif self.indoor_cycle_check == True:
+                if self.indoor_cycle_pathway == 4:
+                    self.indoor_cycle_pathway = 5
+                    self.indoor_cycle()
+            elif self.outdoor_cycle_check == True:
+                if self.outdoor_cycle_pathway == 4:
+                    self.outdoor_cycle_pathway = 5
+                    self.outdoor_cycle()
         elif self.pathway == 9:
-            self.indoor_run_complete_entry.pack_forget()
-            self.confirm_log = self.entry.get()
-            if self.confirm_log.lower() == "yes":
-                self.update_exercise_log()
-                self.entry_added = Label(self, text = f"The entry has been added to your exercise log.\n\n{self.exercise_log[-1]}")
-                self.entry_added.pack(side = TOP, padx = 100, pady = 20)
+            if self.indoor_run_check == True:
+                self.indoor_run_complete_entry.pack_forget()
+                self.confirm_log = self.entry.get()
+                if self.confirm_log.lower() == "yes":
+                    self.update_exercise_log()
+                    self.entry_added = Label(self, text = f"The entry has been added to your exercise log.\n\n{self.exercise_log[-1]}")
+                    self.entry_added.pack(side = TOP, padx = 100, pady = 20)
+            elif self.outdoor_run_check == True:
+                self.outdoor_run_complete_entry.pack_forget()
+                self.confirm_log = self.entry.get()
+                if self.confirm_log.lower() == "yes":
+                    self.update_exercise_log()
+                    self.entry_added = Label(self, text = f"The entry has been added to your exercise log.\n\n{self.exercise_log[-1]}")
+                    self.entry_added.pack(side = TOP, padx = 100, pady = 20)
+            elif self.indoor_cycle_check == True:
+                self.indoor_cycle_complete_entry.pack_forget()
+                self.confirm_log = self.entry.get()
+                if self.confirm_log.lower() == "yes":
+                    self.update_exercise_log()
+                    self.entry_added = Label(self, text = f"The entry has been added to your exercise log.\n\n{self.exercise_log[-1]}")
+                    self.entry_added.pack(side = TOP, padx = 100, pady = 20)
+            elif self.outdoor_cycle_check == True:
+                self.outdoor_cycle_complete_entry.pack_forget()
+                self.confirm_log = self.entry.get()
+                if self.confirm_log.lower() == "yes":
+                    self.update_exercise_log()
+                    self.entry_added = Label(self, text = f"The entry has been added to your exercise log.\n\n{self.exercise_log[-1]}")
+                    self.entry_added.pack(side = TOP, padx = 100, pady = 20)
         elif self.pathway == 10:
             # removes previous text from GUI
             self.confirm_option.pack_forget()
@@ -195,12 +261,17 @@ class Exercise_Log(Tk):
             self.check_confirmation = self.entry.get()
             # checks if user input matches "yes"; if it does, following code will run
             if self.check_confirmation.lower() == "yes":
-                self.confirmed_run = Label(self, text = "Sure, I can log an indoor cycle for you.")
-                self.confirmed_run.pack(side = TOP, padx = 100, pady = 20)
-                # sets exercise_type to "indoor run" to enable reusable string
-                self.exercise_type = "indoor cycle"
-                self.indoor_cycle_pathway = 1
-                self.indoor_cycle()
+                self.indoor_cycle_check = True
+                self.outdoor_cycle_check = False
+                self.indoor_run_check = False
+                self.outdoor_run_check = False
+                self.handle_indoor_cycle_conversation()
+            elif self.check_confirmation.lower() == "no":
+                self.indoor_cycle_check = False
+                self.outdoor_cycle_check = True
+                self.indoor_run_check = False
+                self.outdoor_run_check = False
+                self.handle_outdoor_cycle_conversation()
 
     
     # ****** work on getting these functions to handle each exercise type log conversation
@@ -218,6 +289,22 @@ class Exercise_Log(Tk):
         self.exercise_type = "outdoor run"
         self.outdoor_run_pathway = 1
         self.outdoor_run()
+
+    def handle_indoor_cycle_conversation(self):
+        self.confirmed_cycle= Label(self, text = "Sure, I can log an indoor cycle for you.")
+        self.confirmed_cycle.pack(side = TOP, padx = 100, pady = 20)
+        # sets exercise_type to "indoor run" to enable reusable string
+        self.exercise_type = "indoor cycle"
+        self.indoor_cycle_pathway = 1
+        self.indoor_cycle()
+
+    def handle_outdoor_cycle_conversation(self):
+        self.confirmed_cycle= Label(self, text = "Sure, I can log an outdoor cycle for you.")
+        self.confirmed_cycle.pack(side = TOP, padx = 100, pady = 20)
+        # sets exercise_type to "indoor run" to enable reusable string
+        self.exercise_type = "outdoor cycle"
+        self.outdoor_cycle_pathway = 1
+        self.outdoor_cycle()
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~ Entry field for exercise type ~~~~~~~~~~~~~~~~~~~~~~~
@@ -254,7 +341,7 @@ class Exercise_Log(Tk):
                 self.confirm_option = Label(self, text = "I found a possible match.\n\nDo you want to log an indoor cycle?")
                 self.confirm_option.pack(side = TOP, padx = 100, pady = 20)
                 self.enter_confirmation = self.user_input_field()
-                self.pathway = 4
+                self.pathway = 10
                 self.display_submit_button()
 
 
@@ -264,32 +351,6 @@ class Exercise_Log(Tk):
                 if word not in self.stop_words:
                     self.user_response_list.append(word)
             return self.user_response_list
-
-    """"  
-                elif self.confirm_option.lower() == "no":
-                    self.confirm_option = input(Fore.GREEN + f"\nOk, did you want to log an outdoor cycle? " + Fore.WHITE)
-                    if self.confirm_option.lower() == "yes":
-                        print(Fore.GREEN + "\nSure, I can log an outdoor cycle for you." + Fore.WHITE)
-                        self.exercise_type = "outdoor cycle"
-                        self.outdoor_cycle()
-                    else:
-                        print(Fore.GREEN + "\nSorry, something has gone wrong.")
-            elif word == "laps":
-                self.confirm_option = input(Fore.GREEN + f"\nI found a possible match - do you want to log swimming laps? " + Fore.WHITE)
-                if self.confirm_option.lower() == "yes":
-                    print(Fore.GREEN + "\nSure, I can log swimming laps for you." + Fore.WHITE)
-                    self.exercise_type = "swimming laps"
-                    self.swimming_laps()
-                else:
-                    print(Fore.GREEN + "\nSorry, something has gone wrong.")
-            elif word == "ocean":
-                self.confirm_option = input(Fore.GREEN + f"\nI found a possible match - do you want to log an open ocean swim? " +Fore.WHITE)
-                if self.confirm_option.lower() == "yes":
-                    print(Fore.GREEN + "\nSure, I can log an open ocean swim for you." + Fore.WHITE)
-                    self.exercise_type = "open ocean swim"
-                    self.open_ocean_swimming()
-                else:
-                    print(Fore.GREEN + "\nSorry, something has gone wrong.") """
     
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Logging indoor run ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -318,33 +379,63 @@ class Exercise_Log(Tk):
             self.outdoor_run_time = self.exercise_time()
         elif self.outdoor_run_pathway == 3:
             self.outdoor_run_duration = self.exercise_duration()
-        """"
-        self.outdoor_run_date_check = input(Fore.GREEN + f"\nOk, so you completed your {self.exercise_type} on {self.outdoor_run_date}. Is that correct? " + Fore.WHITE)
-        if self.outdoor_run_date_check == "yes":
-            print(Fore.GREEN + "\nGreat! Let's move on." + Fore.WHITE)
-            self.outdoor_run_time = self.exercise_time()
-            self.outdoor_run_time_check = input(Fore.GREEN + f"\nJust checking: you completed your {self.exercise_type} at {self.outdoor_run_time}. Have I got that right? " + Fore.WHITE)
-            if self.outdoor_run_time_check == "yes":
-                print(Fore.GREEN + "\nExcellent! Let's keep going." + Fore.WHITE)
-                self.outdoor_run_duration = self.exercise_duration()
-                self.outdoor_run_duration_check = input(Fore.GREEN + f"Confirming: you did an {self.exercise_type} for {self.outdoor_run_duration}? " + Fore.WHITE)
-                if self.outdoor_run_duration_check == "yes":
-                    print(Fore.GREEN + "\nGreat, next question!" + Fore.WHITE)
-                    self.outdoor_run_distance = self.exercise_distance()
-                    self.outdoor_run_distance_check = input(Fore.GREEN + f"\nOk, so you did an {self.exercise_type} for {self.outdoor_run_distance} - is that correct? " + Fore.WHITE)
-                    if self.outdoor_run_distance_check == "yes":
-                        print(Fore.GREEN + "\nAlrighty then!" + Fore.WHITE)
-                        self.outdoor_run_complete_entry = input(Fore.GREEN + f"The following information will be added to your exercise log:\nDate of {self.exercise_type}: {self.outdoor_run_date}\nTime of {self.exercise_type}: {self.outdoor_run_time}\nDuration of {self.exercise_type}: {self.outdoor_run_duration}\nDistance of {self.exercise_type}: {self.outdoor_run_distance}\nAdd this entry to your log? " + Fore.WHITE)
-                        if self.outdoor_run_complete_entry == "yes":
-                            self.update_exercise_log()
-                            print(self.exercise_log[-1])
-    """
+        elif self.outdoor_run_pathway == 4:
+            self.outdoor_run_distance = self.exercise_distance()
+        elif self.outdoor_run_pathway == 5:
+            self.outdoor_run_complete_entry = Label(self, text = f"The following information will be added to your exercise log:\n\nDate of {self.exercise_type}: {self.get_date}\nTime of {self.exercise_type}: {self.get_time}\nDuration of {self.exercise_type}: {self.get_duration}\nDistance of {self.exercise_type}: {self.get_distance}\n\nWould you like to add this entry to your log?")
+            self.outdoor_run_complete_entry.pack(side = TOP, padx = 100, pady = 20)
+            self.confirm_entry = self.user_input_field()
+            self.pathway = 9
+            self.display_submit_button()
+
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Logging indoor cycle ~~~~~~~~~~~~~~~~~~~~~~~~~
+    def indoor_cycle(self):
+        if self.indoor_cycle_pathway == 1:
+            self.indoor_cycle_date = self.exercise_date()
+        elif self.indoor_cycle_pathway == 2:
+            self.indoor_cycle_time = self.exercise_time()
+        elif self.indoor_cycle_pathway == 3:
+            self.indoor_cycle_duration = self.exercise_duration()
+        elif self.indoor_cycle_pathway == 4:
+            self.indoor_cycle_distance = self.exercise_distance()
+        elif self.indoor_cycle_pathway == 5:
+            self.indoor_cycle_complete_entry = Label(self, text = f"The following information will be added to your exercise log:\n\nDate of {self.exercise_type}: {self.get_date}\nTime of {self.exercise_type}: {self.get_time}\nDuration of {self.exercise_type}: {self.get_duration}\nDistance of {self.exercise_type}: {self.get_distance}\n\nWould you like to add this entry to your log?")
+            self.indoor_cycle_complete_entry.pack(side = TOP, padx = 100, pady = 20)
+            self.confirm_entry = self.user_input_field()
+            self.pathway = 9
+            self.display_submit_button()
+
+    
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Logging outdoor cycle ~~~~~~~~~~~~~~~~~~~~~~~~~
+    def outdoor_cycle(self):
+        if self.outdoor_cycle_pathway == 1:
+            self.outdoor_cycle_date = self.exercise_date()
+        elif self.outdoor_cycle_pathway == 2:
+            self.outdoor_cycle_time = self.exercise_time()
+        elif self.outdoor_cycle_pathway == 3:
+            self.outdoor_cycle_duration = self.exercise_duration()
+        elif self.outdoor_cycle_pathway == 4:
+            self.outdoor_cycle_distance = self.exercise_distance()
+        elif self.outdoor_cycle_pathway == 5:
+            self.outdoor_cycle_complete_entry = Label(self, text = f"The following information will be added to your exercise log:\n\nDate of {self.exercise_type}: {self.get_date}\nTime of {self.exercise_type}: {self.get_time}\nDuration of {self.exercise_type}: {self.get_duration}\nDistance of {self.exercise_type}: {self.get_distance}\n\nWould you like to add this entry to your log?")
+            self.outdoor_cycle_complete_entry.pack(side = TOP, padx = 100, pady = 20)
+            self.confirm_entry = self.user_input_field()
+            self.pathway = 9
+            self.display_submit_button()
     
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Gain exercise date ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def exercise_date(self):
         # removes previous text
-        self.confirmed_run.pack_forget()
+        if self.indoor_run_check == True:
+            self.confirmed_run.pack_forget()
+        elif self.outdoor_run_check == True:
+            self.confirmed_run.pack_forget()
+        elif self.indoor_cycle_check == True:
+            self.confirmed_cycle.pack_forget()
+        elif self.outdoor_cycle_check == True:
+            self.confirmed_cycle.pack_forget()
         # prompt user for exercise date
         self.exercise_date_completed = Label(self, text = f"On what date did you complete your {self.exercise_type}? ")
         self.exercise_date_completed.pack(side = TOP, padx = 100, pady = 20)
@@ -383,116 +474,14 @@ class Exercise_Log(Tk):
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Update exercise log ~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def update_exercise_log(self):
         if self.exercise_type == "indoor run":
-            self.indoor_run_log_entry = self.exercise_log.append(Fore.GREEN + f"Exercise type: {self.exercise_type}\nDate: {self.get_date}\nTime: {self.get_time}\nDuration: {self.get_duration}\nDistance: {self.get_distance}" + Fore.WHITE)
-            
-            """
+            self.indoor_run_log_entry = self.exercise_log.append(f"Exercise type: {self.exercise_type}\nDate: {self.get_date}\nTime: {self.get_time}\nDuration: {self.get_duration}\nDistance: {self.get_distance}")
         elif self.exercise_type == "outdoor run":
-            self.outdoor_run_log_entry = self.exercise_log.append(Fore.GREEN + f"\nLatest entry\nExercise type: {self.exercise_type}\nDate: {self.outdoor_run_date}\nTime: {self.outdoor_run_time}\nDuration: {self.outdoor_run_duration}\nDistance: {self.outdoor_run_distance}" + Fore.WHITE)
-            return self.outdoor_run_log_entry
+            self.outdoor_run_log_entry = self.exercise_log.append(f"Exercise type: {self.exercise_type}\nDate: {self.get_date}\nTime: {self.get_time}\nDuration: {self.get_duration}\nDistance: {self.get_distance}")
         elif self.exercise_type == "indoor cycle":
-            self.indoor_cycle_log_entry = self.exercise_log.append(Fore.GREEN + f"\nLatest entry\nExercise type: {self.exercise_type}\nDate: {self.indoor_cycle_date}\nTime: {self.indoor_cycle_time}\nDuration: {self.indoor_cycle_duration}\nDistance: {self.indoor_cycle_distance}" + Fore.WHITE)
-            return self.indoor_cycle_log_entry
+            self.indoor_cycle_log_entry = self.exercise_log.append(f"Exercise type: {self.exercise_type}\nDate: {self.get_date}\nTime: {self.get_time}\nDuration: {self.get_duration}\nDistance: {self.get_distance}")
         elif self.exercise_type == "outdoor cycle":
-            self.outdoor_cycle_log_entry = self.exercise_log.append(Fore.GREEN + f"\nLatest entry\nExercise type: {self.exercise_type}\nDate: {self.outdoor_cycle_date}\nTime: {self.outdoor_cycle_time}\nDuration: {self.outdoor_cycle_duration}\nDistance: {self.outdoor_cycle_distance}" + Fore.WHITE)
-            return self.outdoor_cycle_log_entry
-        elif self.exercise_type == "swimming laps":
-            self.swimming_laps_log_entry = self.exercise_log.append(Fore.GREEN + f"\nLatest entry\nExercise type: {self.exercise_type}\nDate: {self.swimming_laps_date}\nTime: {self.swimming_laps_time}\nDuration: {self.swimming_laps_duration}\nDistance: {self.swimming_laps_duration}" + Fore.WHITE)
-            return self.swimming_laps_log_entry
-        elif self.exercise_type == "open ocean swim":
-            self.open_ocean_swimming_log_entry = self.exercise_log.append(Fore.GREEN + f"\nLatest entry\nExercise type: {self.exercise_type}\nDate: {self.open_ocean_swimming_date}\nTime: {self.open_ocean_swimming_time}\nDuration: {self.open_ocean_swimming_duration}\nDistance: {self.open_ocean_swimming_distance}" + Fore.WHITE)
-            return self.open_ocean_swimming_log_entry """
-
-    """
-    def indoor_cycle(self):
-        self.indoor_cycle_date = self.exercise_date()
-        self.indoor_cycle_date_check = input(Fore.GREEN + f"\nOk, so you completed your {self.exercise_type} on {self.indoor_cycle_date}. Is that correct? " + Fore.WHITE)
-        if self.indoor_cycle_date_check == "yes":
-            print(Fore.GREEN + "\nGreat! Let's move on." + Fore.WHITE)
-            self.indoor_cycle_time = self.exercise_time()
-            self.indoor_cycle_time_check = input(Fore.GREEN + f"\nJust checking: you completed your {self.exercise_type} at {self.indoor_cycle_time}. Have I got that right? " + Fore.WHITE)
-            if self.indoor_cycle_time_check == "yes":
-                print(Fore.GREEN + "\nExcellent! Let's keep going." + Fore.WHITE)
-                self.indoor_cycle_duration = self.exercise_duration()
-                self.indoor_cycle_duration_check = input(Fore.GREEN + f"Confirming: you did an {self.exercise_type} for {self.indoor_cycle_duration}? " + Fore.WHITE)
-                if self.indoor_cycle_duration_check == "yes":
-                    print(Fore.GREEN + "\nGreat, next question!" + Fore.WHITE)
-                    self.indoor_cycle_distance = self.exercise_distance()
-                    self.indoor_cycle_distance_check = input(Fore.GREEN + f"\nOk, so you did an {self.exercise_type} for {self.indoor_cycle_distance} - is that correct? " + Fore.WHITE)
-                    if self.indoor_cycle_distance_check == "yes":
-                        print(Fore.GREEN + "\nAlrighty then!" + Fore.WHITE)
-                        self.indoor_cycle_complete_entry = input(Fore.GREEN + f"The following information will be added to your exercise log:\nDate of {self.exercise_type}: {self.indoor_cycle_date}\nTime of {self.exercise_type}: {self.indoor_cycle_time}\nDuration of {self.exercise_type}: {self.indoor_cycle_duration}\nDistance of {self.exercise_type}: {self.indoor_cycle_distance}\nAdd this entry to your log? " + Fore.WHITE)
-                        if self.indoor_cycle_complete_entry == "yes":
-                            self.update_exercise_log()
-                            print(self.exercise_log[-1])
-
-
-    def outdoor_cycle(self):
-        self.outdoor_cycle_date = self.exercise_date()
-        self.outdoor_cycle_date_check = input(Fore.GREEN + f"\nOk, so you completed your {self.exercise_type} on {self.outdoor_cycle_date}. Is that correct? " + Fore.WHITE)
-        if self.outdoor_cycle_date_check == "yes":
-            print(Fore.GREEN + "\nGreat! Let's move on." + Fore.WHITE)
-            self.outdoor_cycle_time = self.exercise_time()
-            self.outdoor_cycle_time_check = input(Fore.GREEN + f"\nJust checking: you completed your {self.exercise_type} at {self.outdoor_cycle_time}. Have I got that right? " + Fore.WHITE)
-            if self.outdoor_cycle_time_check == "yes":
-                print(Fore.GREEN + "\nExcellent! Let's keep going." + Fore.WHITE)
-                self.outdoor_cycle_duration = self.exercise_duration()
-                self.outdoor_cycle_duration_check = input(Fore.GREEN + f"Confirming: you did an {self.exercise_type} for {self.outdoor_cycle_duration}? " + Fore.WHITE)
-                if self.outdoor_cycle_duration_check == "yes":
-                    print(Fore.GREEN + "\nGreat, next question!" + Fore.WHITE)
-                    self.outdoor_cycle_distance = self.exercise_distance()
-                    self.outdoor_cycle_distance_check = input(Fore.GREEN + f"\nOk, so you did an {self.exercise_type} for {self.outdoor_cycle_distance} - is that correct? " + Fore.WHITE)
-                    if self.outdoor_cycle_distance_check == "yes":
-                        print(Fore.GREEN + "\nAlrighty then!" + Fore.WHITE)
-                        self.outdoor_cycle_complete_entry = input(Fore.GREEN + f"The following information will be added to your exercise log:\nDate of {self.exercise_type}: {self.outdoor_cycle_date}\nTime of {self.exercise_type}: {self.outdoor_cycle_time}\nDuration of {self.exercise_type}: {self.outdoor_cycle_duration}\nDistance of {self.exercise_type}: {self.outdoor_cycle_distance}\nAdd this entry to your log? " + Fore.WHITE)
-                        if self.outdoor_cycle_complete_entry == "yes":
-                            self.update_exercise_log()
-                            print(self.exercise_log[-1])
-
-
-    def swimming_laps(self):
-        self.swimming_laps_date = self.exercise_date()
-        self.swimming_laps_date_check = input(Fore.GREEN + f"\nOk, so you were {self.exercise_type} on {self.swimming_laps_date}. Is that correct? " + Fore.WHITE)
-        if self.swimming_laps_date_check == "yes":
-            print(Fore.GREEN + "\nGreat! Let's move on." + Fore.WHITE)
-            self.swimming_laps_time = self.exercise_time()
-            self.swimming_laps_time_check = input(Fore.GREEN + f"\nJust checking: you were {self.exercise_type} at {self.swimming_laps_time}. Have I got that right? " + Fore.WHITE)
-            if self.swimming_laps_time_check == "yes":
-                print(Fore.GREEN + "\nExcellent! Let's keep going." + Fore.WHITE)
-                self.swimming_laps_duration = self.exercise_duration()
-                self.swimming_laps_duration_check = input(Fore.GREEN + f"Confirming: you were {self.exercise_type} for {self.swimming_laps_duration}? " + Fore.WHITE)
-                if self.swimming_laps_duration_check == "yes":
-                    print(Fore.GREEN + "\nGreat, next question!" + Fore.WHITE)
-                    self.swimming_laps_distance = self.exercise_distance()
-                    self.swimming_laps_distance_check = input(Fore.GREEN + f"\nOk, so you swam laps for {self.swimming_laps_distance} - is that correct? " + Fore.WHITE)
-                    if self.swimming_laps_distance_check == "yes":
-                        print(Fore.GREEN + "\nAlrighty then!" + Fore.WHITE)
-                        self.swimming_laps_complete_entry = input(Fore.GREEN + f"The following information will be added to your exercise log:\nDate of {self.exercise_type}: {self.swimming_laps_date}\nTime of {self.exercise_type}: {self.swimming_laps_time}\nDuration of {self.exercise_type}: {self.swimming_laps_duration}\nDistance of {self.exercise_type}: {self.swimming_laps_distance}\nAdd this entry to your log? " + Fore.WHITE)
-                        if self.swimming_laps_complete_entry == "yes":
-                            self.update_exercise_log()
-                            print(self.exercise_log[-1])
-
-
-    def open_ocean_swimming(self):
-        self.open_ocean_swimming_date = self.exercise_date()
-        self.open_ocean_swimming_date_check = input(Fore.GREEN + f"\nOk, so you were {self.exercise_type} on {self.open_ocean_swimming_date}. Is that correct? " + Fore.WHITE)
-        if self.open_ocean_swimming_date_check == "yes":
-            print(Fore.GREEN + "\nGreat! Let's move on." + Fore.WHITE)
-            self.open_ocean_swimming_time = self.exercise_time()
-            self.open_ocean_swimming_time_check = input(Fore.GREEN + f"\nJust checking: you were {self.exercise_type} at {self.open_ocean_swimming_time}. Have I got that right? " + Fore.WHITE)
-            if self.open_ocean_swimming_time_check == "yes":
-                print(Fore.GREEN + "\nExcellent! Let's keep going." + Fore.WHITE)
-                self.open_ocean_swimming_duration = self.exercise_duration()
-                self.open_ocean_swimming_duration_check = input(Fore.GREEN + f"Confirming: you were {self.exercise_type} for {self.open_ocean_swimming_duration}? " + Fore.WHITE)
-                if self.open_ocean_swimming_duration_check == "yes":
-                    print(Fore.GREEN + "\nGreat, next question!" + Fore.WHITE)
-                    self.open_ocean_swimming_distance = self.exercise_distance()
-                    self.open_ocean_swimming_distance_check = input(Fore.GREEN + f"\nOk, so you swam laps for {self.open_ocean_swimming_distance} - is that correct? " + Fore.WHITE)
-                    if self.open_ocean_swimming_distance_check == "yes":
-                        print(Fore.GREEN + "\nAlrighty then!" + Fore.WHITE)
-                        self.open_ocean_swimming_complete_entry = input(Fore.GREEN + f"The following information will be added to your exercise log:\nDate of {self.exercise_type}: {self.open_ocean_swimming_date}\nTime of {self.exercise_type}: {self.open_ocean_swimming_time}\nDuration of {self.exercise_type}: {self.open_ocean_swimming_duration}\nDistance of {self.exercise_type}: {self.open_ocean_swimming_distance}\nAdd this entry to your log? " + Fore.WHITE)
-                        if self.open_ocean_swimming_complete_entry == "yes":
-                            self.update_exercise_log()
-                            print(self.exercise_log[-1])"""
+            self.outdoor_cycle_log_entry = self.exercise_log.append(f"Exercise type: {self.exercise_type}\nDate: {self.get_date}\nTime: {self.get_time}\nDuration: {self.get_duration}\nDistance: {self.get_distance}")
+            
     
 
 new_exercise = Exercise_Log()
